@@ -7,7 +7,7 @@ data "oci_identity_availability_domains" "this" {
 }
 
 data "oci_core_images" "this" {
-  compartment_id = oci_identity_compartment.this.id
-  operating_system = "Canonical Ubuntu"
+  compartment_id           = oci_identity_compartment.this.id
+  operating_system         = "Canonical Ubuntu"
   operating_system_version = "20.04"
 }

@@ -1,25 +1,25 @@
 resource "oci_core_vcn" "this" {
   compartment_id = oci_identity_compartment.this.compartment_id
 
-  cidr_block = "10.0.0.0/16"
-  display_name = "${local.prefix}-vpn"
-  freeform_tags  = local.tags
+  cidr_block    = "10.0.0.0/16"
+  display_name  = "${local.prefix}-vpn"
+  freeform_tags = local.tags
 }
 
 resource "oci_core_internet_gateway" "this" {
   compartment_id = oci_identity_compartment.this.compartment_id
-  vcn_id = oci_core_vcn.this.id
+  vcn_id         = oci_core_vcn.this.id
 
-  display_name = "${local.prefix}-igw"
-  freeform_tags  = local.tags
+  display_name  = "${local.prefix}-igw"
+  freeform_tags = local.tags
 }
 
 resource "oci_core_route_table" "this" {
   compartment_id = oci_identity_compartment.this.id
-  vcn_id = oci_core_vcn.this.id
+  vcn_id         = oci_core_vcn.this.id
 
-  display_name = "${local.prefix}-rt"
-  freeform_tags  = local.tags
+  display_name  = "${local.prefix}-rt"
+  freeform_tags = local.tags
 
   route_rules {
     network_entity_id = oci_core_internet_gateway.this.id
@@ -29,11 +29,11 @@ resource "oci_core_route_table" "this" {
 }
 
 resource "oci_core_subnet" "this" {
-  cidr_block = cidrsubnet(oci_core_vcn.this.cidr_block, 8, 1)
+  cidr_block     = cidrsubnet(oci_core_vcn.this.cidr_block, 8, 1)
   compartment_id = oci_identity_compartment.this.id
-  vcn_id = oci_core_vcn.this.id
+  vcn_id         = oci_core_vcn.this.id
 
-  display_name = "${local.prefix}-sbt"
+  display_name   = "${local.prefix}-sbt"
   route_table_id = oci_core_route_table.this.id
   freeform_tags  = local.tags
 }
