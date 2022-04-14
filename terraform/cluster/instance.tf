@@ -5,11 +5,11 @@ resource "oci_identity_compartment" "this" {
 }
 
 resource "oci_core_instance" "master" {
-  availability_domain = data.oci_identity_availability_domains.this.availability_domains[0].name
+  availability_domain = data.oci_identity_availability_domains.this.availability_domains[1].name
   compartment_id      = oci_identity_compartment.this.id
   shape               = "VM.Standard.A1.Flex"
   shape_config {
-    memory_in_gbs = 12
+    memory_in_gbs = 8
     ocpus         = 2
   }
 
@@ -28,14 +28,14 @@ resource "oci_core_instance" "master" {
     ]
   }
   metadata = {
-    ssh_authorized_keys = chomp(file("~/.ssh/id_rsa.pub"))
+    ssh_authorized_keys = local.ssh_authorized_keys
   }
   preserve_boot_volume = false
 }
 
 resource "oci_core_instance" "worker" {
   count               = local.enable_workers ? 2 : 0
-  availability_domain = data.oci_identity_availability_domains.this.availability_domains[0].name
+  availability_domain = data.oci_identity_availability_domains.this.availability_domains[1].name
   compartment_id      = oci_identity_compartment.this.id
   shape               = "VM.Standard.A1.Flex"
   shape_config {
@@ -58,7 +58,7 @@ resource "oci_core_instance" "worker" {
     ]
   }
   metadata = {
-    ssh_authorized_keys = chomp(file("~/.ssh/id_rsa.pub"))
+    ssh_authorized_keys = local.ssh_authorized_keys
   }
   preserve_boot_volume = false
 }
